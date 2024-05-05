@@ -18,7 +18,7 @@
                 </section>
                 <hr>
 
-                <form action="" method="post">
+                <form action="{%url 'cadastro'%}" method="POST"> {% csrf_token %}
                     <h2 class="fonte-destaque1">Cadastre-se</h2>
                     <br>
                     <label for="">Username</label>
@@ -40,8 +40,20 @@
                     </div>
                     <br>
                     <input type="submit" value="Cadastrar" class="btn btn-success btn-dark-color">
-                    <a href="#" class="btn btn-dark-color-outline">Já possuo uma conta</a>
+                    <a href="{% url 'login'%}" class="btn btn-dark-color-outline">Já possuo uma conta</a>
                 </form>
+                <br>
+
+                <!-- Mensagens de erro de cadastro -->     
+                {% if messages %} 
+                    {% for message in messages %}
+                        <section class="alert {{message.tags}}">
+                            {{message}}
+                        </section>
+                    {% endfor %}
+                {% endif %}
+               
+
             </div>
         </div>
         <div class="col-md bg-main d-flex justify-content-center align-items-center">
