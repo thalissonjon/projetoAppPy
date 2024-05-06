@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib.messages import constants
 from django.contrib import messages
 from django.contrib import auth
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 def cadastro(request):
     if request.method == "GET":
@@ -14,9 +16,16 @@ def cadastro(request):
         email = request.POST.get('email')
         senha = request.POST.get('senha')
         confirmar_senha = request.POST.get('confirmar_senha')
-        
-        if not validate_senha(senha, confirmar_senha, request) or not validate_username(username, request):
+
+        valid_password = validate_senha(senha, confirmar_senha, request)
+        valid_user = validate_username(username, request)
+        valid_email = validate_useremail(email, request)
+
+        if not valid_password or not valid_user or not valid_email: # Para que todas as validações sejam rodadas e todos os erros sejam retornados
             return redirect('/usuarios/cadastro')
+
+        # if not validate_senha(senha, confirmar_senha, request) or not validate_username(username, request):
+        #     return redirect('/usuarios/cadastro')
         
         user = User.objects.create_user(
             username = username,
@@ -75,3 +84,10 @@ def validate_username(username, request):
     
     else:
         return True
+    
+def validate_useremail(email,request):
+    try:
+        validate_email(email)
+    except ValidationError as e:
+        messages.add_message(request, constants.ERROR, 'Insira um email válido.')
+        return False
