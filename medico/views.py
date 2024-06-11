@@ -52,3 +52,7 @@ def check_user(request):
     if dm.exists():
         messages.add_message(request, constants.ERROR, 'Usuário já cadastrado.')
         return True
+    
+def abrir_horario(request):
+    if request.method == 'POST':
+        return render(request, 'abrir_horario.html')
